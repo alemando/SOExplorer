@@ -1,0 +1,47 @@
+{
+  "name": "soexplorer",
+  "version": "1.0.0",
+  "description": "Explorador de archivos SO",
+  "main": "app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "webpack": "webpack --mode development --watch",
+    "build": "webpack --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alemando/SOExplorer.git"
+  },
+  "keywords": [
+    "node"
+  ],
+  "author": "alemando",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alemando/SOExplorer/issues"
+  },
+  "homepage": "https://github.com/alemando/SOExplorer#readme",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.12.0",
+    "bootstrap": "^4.4.1",
+    "express": "^4.17.1",
+    "jquery": "^3.4.1",
+    "morgan": "^1.9.1",
+    "popper.js": "^1.16.1",
+    "react-router-dom": "^5.1.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/preset-react": "^7.8.3",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.4.2",
+    "nodemon": "^2.0.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "style-loader": "^1.1.3",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  }
+}
