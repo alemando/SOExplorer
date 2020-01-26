@@ -23,7 +23,9 @@
   },
   "homepage": "https://github.com/alemando/SOExplorer#readme",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.12.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.26",
+    "@fortawesome/free-solid-svg-icons": "^5.12.0",
+    "@fortawesome/react-fontawesome": "^0.1.8",
     "bootstrap": "^4.4.1",
     "express": "^4.17.1",
     "jquery": "^3.4.1",
