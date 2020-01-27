@@ -11,10 +11,228 @@ import { BrowserRouter as Router, Route} from "react-router-dom";
 import Index from "./components/index.component";
 import React, { Component } from 'react';
 
+const Carpeta = props =>(
+  <div className="card mx-1" style={{width : '13rem'}}>
+    <div className="card-body mx-auto">
+      <FontAwesomeIcon icon={faFolder} size="5x" />
+      <h5 className="card-title">{props.element.fileDirName}</h5>
+      <div className="btn-group" role="group" aria-label="Carpeta-buttons">
+        <a href="#" className="btn btn-success">Abrir</a>
+        <button href="#" className="btn btn-info" data-toggle="modal" data-target={"#Carpeta-"+props.element.fileDirName.replace('.',"_")}>+ acciones</button>
+      </div>
+    </div>
+    <div className="modal fade" id={"Carpeta-"+props.element.fileDirName.replace('.',"_")} tabIndex="-1" role="dialog" aria-hidden="true">
+      <div className="modal-dialog" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title"><b>{props.element.fileDirName}</b></h5>
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <div className="container">
+              <ul className="list-group">
+                <li className="list-group-item">
+                    <div className="row">
+                      <div className="col-md-6">
+                        Propietario
+                      </div>
+                      <div className="col-md-6">
+                        {props.element.owner}
+                      </div>
+                    </div>
+                  </li>
+                <li className="list-group-item">
+                  <div className="row">
+                    <div className="col-md-6">
+                      Permisos Usuario
+                    </div>
+                    <div className="col-md-6">
+                      <div className="row">
+                        <div className="col" ><p className="icon_letter" >r</p></div>
+                        <div className="col"><p className="icon_letter">w</p></div>
+                        <div className="col"><p className="icon_letter">x</p></div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li className="list-group-item">
+                  <div className="row">
+                    <div className="col-md-6">
+                      Permisos Grupo
+                    </div>
+                    <div className="col-md-6">
+                      <div className="row">
+                        <div className="col"><p className="icon_letter">r</p></div>
+                        <div className="col"><p className="icon_letter">w</p></div>
+                        <div className="col"><p className="icon_letter">x</p></div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li className="list-group-item">
+                  <div className="row">
+                    <div className="col-md-6">
+                      Permisos Otros
+                    </div>
+                    <div className="col-md-6">
+                      <div className="row">
+                        <div className="col"><p className="icon_letter">r</p></div>
+                        <div className="col"><p className="icon_letter">w</p></div>
+                        <div className="col"><p className="icon_letter">x</p></div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li className="list-group-item">
+                  <div className="row">
+                    <div className="col-md">
+                      <div className="btn-group " role="group" aria-label="action-buttons">
+                        <button className="btn btn-success" type="button" onClick={()=>this.copy(props.element.fileDirName)}>Copiar</button>
+                        <button className="btn btn-warning" type="button" onClick={()=>this.moveCut(props.element.fileDirName)}>Mover/Cortar</button>
+                        <button className="btn btn-danger" type="button" onClick={()=>this.delete(props.element.fileDirName)}>Eliminar</button>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li className="list-group-item">
+                  <div className="row">
+                    <div className="col-md">
+                    <div className="btn-group" role="group" aria-label="special-buttons"></div>
+                      <div className="btn-group" role="group" aria-label="special-buttons">
+                        <button className="btn btn-success" type="button">Cambiar Nombre</button>
+                        <button className="btn btn-primary" type="button">Cambiar Permisos</button>
+                        <button className="btn btn-warning" type="button">Cambiar propietario</button>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)
+
+const Archivo = props => (
+  <div className="card mx-1" style={{width : '13rem'}}>
+    <div className="card-body mx-auto">
+      <FontAwesomeIcon icon={faFile} size="5x" />
+      <h5 className="card-title">{props.element.fileDirName}</h5>
+      <button href="#" className="btn btn-info" data-toggle="modal" data-target={"#Archivo-"+props.element.fileDirName.replace('.',"_")}>+ acciones</button>
+    </div>
+    <div className="modal fade" id={"Archivo-"+props.element.fileDirName.replace('.',"_")} tabIndex="-1" role="dialog" aria-hidden="true">
+      <div className="modal-dialog" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title"><b>{props.element.fileDirName}</b></h5>
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <div className="container">
+              <ul className="list-group">
+                <li className="list-group-item">
+                    <div className="row">
+                      <div className="col-md-6">
+                        Propietario
+                      </div>
+                      <div className="col-md-6">
+                        {props.element.owner}
+                      </div>
+                    </div>
+                  </li>
+                <li className="list-group-item">
+                  <div className="row">
+                    <div className="col-md-6">
+                      Permisos Usuario
+                    </div>
+                    <div className="col-md-6">
+                      <div className="row">
+                        <div className="col" ><p className="icon_letter" >r</p></div>
+                        <div className="col"><p className="icon_letter">w</p></div>
+                        <div className="col"><p className="icon_letter">x</p></div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li className="list-group-item">
+                  <div className="row">
+                    <div className="col-md-6">
+                      Permisos Grupo
+                    </div>
+                    <div className="col-md-6">
+                      <div className="row">
+                        <div className="col"><p className="icon_letter">r</p></div>
+                        <div className="col"><p className="icon_letter">w</p></div>
+                        <div className="col"><p className="icon_letter">x</p></div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li className="list-group-item">
+                  <div className="row">
+                    <div className="col-md-6">
+                      Permisos Otros
+                    </div>
+                    <div className="col-md-6">
+                      <div className="row">
+                        <div className="col"><p className="icon_letter">r</p></div>
+                        <div className="col"><p className="icon_letter">w</p></div>
+                        <div className="col"><p className="icon_letter">x</p></div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li className="list-group-item">
+                  <div className="row">
+                    <div className="col-md">
+                      <div className="btn-group " role="group" aria-label="action-buttons">
+                        <button className="btn btn-success" type="button" onClick={()=>this.copy(props.element.fileDirName)}>Copiar</button>
+                        <button className="btn btn-warning" type="button" onClick={()=>this.moveCut(props.element.fileDirName)}>Mover/Cortar</button>
+                        <button className="btn btn-danger" type="button" onClick={()=>this.delete(props.element.fileDirName)}>Eliminar</button>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li className="list-group-item">
+                  <div className="row">
+                    <div className="col-md">
+                    <div className="btn-group" role="group" aria-label="special-buttons"></div>
+                      <div className="btn-group" role="group" aria-label="special-buttons">
+                        <button className="btn btn-success" type="button">Cambiar Nombre</button>
+                        <button className="btn btn-primary" type="button">Cambiar Permisos</button>
+                        <button className="btn btn-warning" type="button">Cambiar propietario</button>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)
+
 export default class App extends Component {
   constructor() {
     super();
     this.state = {
+      filesDirectories : [],
+      currentDir: '',
+      action: '',
       dirPath: '',
       type: 'Archivo',
       selectedOption: 'Archivo',
@@ -25,7 +243,9 @@ export default class App extends Component {
   }
 
   componentDidMount(){
-    this.state.dirPath = window.location.pathname
+    this.setState({
+      dirPath : window.location.pathname
+    })
     this.fetchVerCarpeta();
   }
 
@@ -38,7 +258,6 @@ export default class App extends Component {
       }
     })
   }
-
   addFileOrDirectory(e){
     e.preventDefault();
     let data = {
@@ -70,13 +289,71 @@ export default class App extends Component {
       .catch(err => console.error(err));
   }
 
+  paste(){
+    let data = {
+      currentDir: this.state.currentDir,
+      action: this.state.action,
+      detinationDir: this.state.dirPath,
+      fileDirectoryName : this.state.fileDirectoryName
+    }
+
+  fetch('/api/action', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+        'Accept' : 'application/json',
+        'Content-Type': 'application/json'
+    }
+    })
+    .then(res => res.json())
+    .then(data => {
+        this.fetchVerCarpeta()
+        this.setState({
+          currentDir: '',
+          action: '',
+          fileDirectoryName: ''
+        })
+        console.log(data)
+    })
+    .catch(err => console.error(err));
+  }
+
+  copy(fileDirectory){
+    this.setState({
+      currentDir: this.state.dirPath,
+      fileDirectoryName : fileDirectory,
+      action: 'copy'
+    })
+  }
+
+  moveCut(fileDirectory){
+    this.setState({
+      currentDir: this.state.dirPath,
+      fileDirectoryName : fileDirectory,
+      action: 'moveCut'
+    })
+  }
+
+  delete(){
+    console.log('borrar')
+  }
+
   fetchVerCarpeta() {
     fetch(`/carpeta?dir=${this.state.dirPath}`)
         .then(res => res.json())
         .then(data => {
-            this.setState({aseguradoras: data});
+            this.setState({filesDirectories: data});
         })
         .catch(err => console.error(err));
+}
+
+filesDirectories(){
+  return this.state.filesDirectories.map(current => {
+    if(current.permissions[0] =='d'){
+      return <Carpeta element={current} key={current.fileDirName} />;
+    }
+    return <Archivo element={current} key={current.fileDirName} />;
+  })
 }
 
 handleChange(e) {
@@ -93,9 +370,7 @@ handleChange(e) {
         <nav className="navbar sticky-top navbar-dark bg-dark">
           <form className="form-inline">
             <button className="btn btn-outline-success mx-1" type="button" data-toggle="modal" data-target="#addFileOrDirectory">Crear Archivo/Carpeta</button>
-            <button className="btn btn-outline-primary mx-1" type="button">Copiar</button>
-            <button className="btn btn-outline-danger mx-1" type="button">Mover/Cortar</button>
-            <button className="btn btn-outline-warning mx-1" type="button">Pegar</button>
+            <button className="btn btn-outline-warning mx-1" type="button" disabled={this.state.action == ''} onClick={this.paste}>Pegar</button>
           </form>
         </nav>
         <nav aria-label="breadcrumb">
@@ -106,23 +381,7 @@ handleChange(e) {
         </nav>
         <div className="container-fluid">
           <div className="row">
-            <div className="card mx-1" style={{width : '13rem'}}>
-              <div className="card-body mx-auto">
-                <FontAwesomeIcon icon={faFolder} size="5x" />
-                <h5 className="card-title">Card title</h5>
-                <div className="btn-group" role="group" aria-label="Basic example">
-                  <a href="#" className="btn btn-success">Abrir</a>
-                  <a href="#" className="btn btn-info">+ acciones</a>
-                </div>
-              </div>
-            </div>
-            <div className="card mx-1" style={{width : '13rem'}}>
-              <div className="card-body mx-auto">
-                <FontAwesomeIcon icon={faFile} size="5x" />
-                <h5 className="card-title">Card title</h5>
-                <a href="#" className="btn btn-info">+ acciones</a>
-              </div>
-            </div>
+            {this.filesDirectories()}
           </div>
         </div>
         <div className="modal fade" id="addFileOrDirectory" tabIndex="-1" role="dialog" aria-hidden="true">

@@ -24,10 +24,19 @@ app.get('/carpeta', (req, res) => {
             console.log(`stderr: ${stderr}`);
             return;
         }
-        console.log(`stdout: ${stdout}`);
+        let filesDirectorys = stdout.split("\n")
+        filesDirectorys = filesDirectorys.slice(1, filesDirectorys.length-1)
+        let result = []
+        filesDirectorys.map( element =>{
+            let fileDirectory = element.split(" ")
+            result.push({
+                permissions: fileDirectory[0].split(''),
+                owner:  fileDirectory[2],
+                fileDirName: fileDirectory[fileDirectory.length-1]
+            })
+        })
+        res.json(result)
     });
-    
-    res.json('Hello world')
 })
 
 app.post('/api/addFileOrDirectory', (req, res) => {

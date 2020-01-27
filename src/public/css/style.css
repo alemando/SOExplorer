@@ -1,0 +1,10 @@
+.icon_letter{
+    font-weight: bold;
+    margin: 0;
+    font-size: 20px;
+    text-shadow: 0 0 4px rgb(43, 255, 0), 0 0 6px rgb(43, 255, 0);
+    text-shadow: 0 0 4px rgb(255, 0, 0), 0 0 6px rgb(255, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
