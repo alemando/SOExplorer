@@ -6,9 +6,6 @@ import "bootstrap/dist/js/bootstrap.min.js";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder, faFile } from '@fortawesome/free-solid-svg-icons'
 
-import { BrowserRouter as Router, Route} from "react-router-dom";
-
-import Index from "./components/index.component";
 import React, { Component } from 'react';
 
 const Carpeta = props =>(
@@ -17,8 +14,8 @@ const Carpeta = props =>(
       <FontAwesomeIcon icon={faFolder} size="5x" />
       <h5 className="card-title">{props.element.fileDirName}</h5>
       <div className="btn-group" role="group" aria-label="Carpeta-buttons">
-        <a href="#" className="btn btn-success">Abrir</a>
-        <button href="#" className="btn btn-info" data-toggle="modal" data-target={"#Carpeta-"+props.element.fileDirName.replace('.',"_")}>+ acciones</button>
+        <button onClick={()=> props.component.changeDirpath(props.element.fileDirName)} className="btn btn-success">Abrir</button>
+        <button className="btn btn-info" data-toggle="modal" data-target={"#Carpeta-"+props.element.fileDirName.replace('.',"_")}>+ acciones</button>
       </div>
     </div>
     <div className="modal fade" id={"Carpeta-"+props.element.fileDirName.replace('.',"_")} tabIndex="-1" role="dialog" aria-hidden="true">
@@ -50,9 +47,9 @@ const Carpeta = props =>(
                     </div>
                     <div className="col-md-6">
                       <div className="row">
-                        <div className="col" ><p className="icon_letter" >r</p></div>
-                        <div className="col"><p className="icon_letter">w</p></div>
-                        <div className="col"><p className="icon_letter">x</p></div>
+                        <div className="col" ><p className={"icon_letter " + (props.element.permissions[1] != '-' ? 'pActive' : 'pDeactivate')} >r</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[2] != '-' ? 'pActive' : 'pDeactivate')}>w</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[3] != '-' ? 'pActive' : 'pDeactivate')}>x</p></div>
                       </div>
                     </div>
                   </div>
@@ -64,9 +61,9 @@ const Carpeta = props =>(
                     </div>
                     <div className="col-md-6">
                       <div className="row">
-                        <div className="col"><p className="icon_letter">r</p></div>
-                        <div className="col"><p className="icon_letter">w</p></div>
-                        <div className="col"><p className="icon_letter">x</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[4] != '-' ? 'pActive' : 'pDeactivate')}>r</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[5] != '-' ? 'pActive' : 'pDeactivate')}>w</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[6] != '-' ? 'pActive' : 'pDeactivate')}>x</p></div>
                       </div>
                     </div>
                   </div>
@@ -78,9 +75,9 @@ const Carpeta = props =>(
                     </div>
                     <div className="col-md-6">
                       <div className="row">
-                        <div className="col"><p className="icon_letter">r</p></div>
-                        <div className="col"><p className="icon_letter">w</p></div>
-                        <div className="col"><p className="icon_letter">x</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[7] != '-' ? 'pActive' : 'pDeactivate')}>r</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[8] != '-' ? 'pActive' : 'pDeactivate')}>w</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[9] != '-' ? 'pActive' : 'pDeactivate')}>x</p></div>
                       </div>
                     </div>
                   </div>
@@ -89,9 +86,9 @@ const Carpeta = props =>(
                   <div className="row">
                     <div className="col-md">
                       <div className="btn-group " role="group" aria-label="action-buttons">
-                        <button className="btn btn-success" type="button" onClick={()=>this.copy(props.element.fileDirName)}>Copiar</button>
-                        <button className="btn btn-warning" type="button" onClick={()=>this.moveCut(props.element.fileDirName)}>Mover/Cortar</button>
-                        <button className="btn btn-danger" type="button" onClick={()=>this.delete(props.element.fileDirName)}>Eliminar</button>
+                        <button className="btn btn-success" type="button" data-dismiss="modal" onClick={()=>props.component.copy(props.element.fileDirName)}>Copiar</button>
+                        <button className="btn btn-warning" type="button" data-dismiss="modal" onClick={()=>props.component.moveCut(props.element.fileDirName)}>Mover/Cortar</button>
+                        <button className="btn btn-danger" type="button" onClick={()=>props.component.delete(props.element.fileDirName)}>Eliminar</button>
                       </div>
                     </div>
                   </div>
@@ -125,7 +122,7 @@ const Archivo = props => (
     <div className="card-body mx-auto">
       <FontAwesomeIcon icon={faFile} size="5x" />
       <h5 className="card-title">{props.element.fileDirName}</h5>
-      <button href="#" className="btn btn-info" data-toggle="modal" data-target={"#Archivo-"+props.element.fileDirName.replace('.',"_")}>+ acciones</button>
+      <button className="btn btn-info" data-toggle="modal" data-target={"#Archivo-"+props.element.fileDirName.replace('.',"_")}>+ acciones</button>
     </div>
     <div className="modal fade" id={"Archivo-"+props.element.fileDirName.replace('.',"_")} tabIndex="-1" role="dialog" aria-hidden="true">
       <div className="modal-dialog" role="document">
@@ -156,9 +153,9 @@ const Archivo = props => (
                     </div>
                     <div className="col-md-6">
                       <div className="row">
-                        <div className="col" ><p className="icon_letter" >r</p></div>
-                        <div className="col"><p className="icon_letter">w</p></div>
-                        <div className="col"><p className="icon_letter">x</p></div>
+                        <div className="col" ><p className={"icon_letter " + (props.element.permissions[1] != '-' ? 'pActive' : 'pDeactivate')}>r</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[2] != '-' ? 'pActive' : 'pDeactivate')}>w</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[3] != '-' ? 'pActive' : 'pDeactivate')}>x</p></div>
                       </div>
                     </div>
                   </div>
@@ -170,9 +167,9 @@ const Archivo = props => (
                     </div>
                     <div className="col-md-6">
                       <div className="row">
-                        <div className="col"><p className="icon_letter">r</p></div>
-                        <div className="col"><p className="icon_letter">w</p></div>
-                        <div className="col"><p className="icon_letter">x</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[4] != '-' ? 'pActive' : 'pDeactivate')}>r</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[5] != '-' ? 'pActive' : 'pDeactivate')}>w</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[6] != '-' ? 'pActive' : 'pDeactivate')}>x</p></div>
                       </div>
                     </div>
                   </div>
@@ -184,9 +181,9 @@ const Archivo = props => (
                     </div>
                     <div className="col-md-6">
                       <div className="row">
-                        <div className="col"><p className="icon_letter">r</p></div>
-                        <div className="col"><p className="icon_letter">w</p></div>
-                        <div className="col"><p className="icon_letter">x</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[7] != '-' ? 'pActive' : 'pDeactivate')}>r</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[8] != '-' ? 'pActive' : 'pDeactivate')}>w</p></div>
+                        <div className="col"><p className={"icon_letter " + (props.element.permissions[9] != '-' ? 'pActive' : 'pDeactivate')}>x</p></div>
                       </div>
                     </div>
                   </div>
@@ -195,9 +192,9 @@ const Archivo = props => (
                   <div className="row">
                     <div className="col-md">
                       <div className="btn-group " role="group" aria-label="action-buttons">
-                        <button className="btn btn-success" type="button" onClick={()=>this.copy(props.element.fileDirName)}>Copiar</button>
-                        <button className="btn btn-warning" type="button" onClick={()=>this.moveCut(props.element.fileDirName)}>Mover/Cortar</button>
-                        <button className="btn btn-danger" type="button" onClick={()=>this.delete(props.element.fileDirName)}>Eliminar</button>
+                        <button className="btn btn-success" type="button" data-dismiss="modal" onClick={()=>props.component.copy(props.element.fileDirName)}>Copiar</button>
+                        <button className="btn btn-warning" type="button" data-dismiss="modal" onClick={()=>props.component.moveCut(props.element.fileDirName)}>Mover/Cortar</button>
+                        <button className="btn btn-danger" type="button" onClick={()=>props.component.delete(props.element.fileDirName)}>Eliminar</button>
                       </div>
                     </div>
                   </div>
@@ -233,7 +230,7 @@ export default class App extends Component {
       filesDirectories : [],
       currentDir: '',
       action: '',
-      dirPath: '',
+      dirPath: '/',
       type: 'Archivo',
       selectedOption: 'Archivo',
       name: ''
@@ -242,18 +239,47 @@ export default class App extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  componentDidMount(){
+  goBackDirpath(dirPath){
+    console.log(dirPath.replace(new RegExp("([A-Za-z]*[/]?(?![A-Za-z]))+$"),""))
     this.setState({
-      dirPath : window.location.pathname
+      dirPath: dirPath.replace(new RegExp("([A-Za-z]*[/]?(?![A-Za-z]))+$"),"")
     })
-    this.fetchVerCarpeta();
+    this.fetchVerCarpeta(dirPath.replace(new RegExp("([A-Za-z]*[/]?(?![A-Za-z]))+$"),""))
   }
+
+  changeDirpath(carpeta){
+    if(this.state.dirPath != "/"){
+      this.setState({
+        dirPath: (this.state.dirPath +"/"+ carpeta) 
+      })
+      this.fetchVerCarpeta(this.state.dirPath+"/"+ carpeta)
+    }
+    else{
+      this.setState({
+        dirPath: (this.state.dirPath + carpeta) 
+      })
+      this.fetchVerCarpeta(this.state.dirPath+ carpeta)
+    }
+    
+  }
+
+  componentDidMount(){
+    this.fetchVerCarpeta("/");
+  }
+
+  fetchVerCarpeta(dirPath) {
+    fetch(`/carpeta?dir=${dirPath}`)
+        .then(res => res.json())
+        .then(data => {
+            this.setState({filesDirectories: data});
+        })
+        .catch(err => console.error(err));
+}
 
   breadCrumb(){
     return this.state.dirPath.split('/').map(dir => {
       //Revisar los / luego
       if(dir!=''){
-        console.log(dir)
         return <li key={'breadCrumb-'+dir} className="breadcrumb-item active" aria-current="page">{dir}</li>
       }
     })
@@ -338,21 +364,14 @@ export default class App extends Component {
     console.log('borrar')
   }
 
-  fetchVerCarpeta() {
-    fetch(`/carpeta?dir=${this.state.dirPath}`)
-        .then(res => res.json())
-        .then(data => {
-            this.setState({filesDirectories: data});
-        })
-        .catch(err => console.error(err));
-}
+  
 
 filesDirectories(){
   return this.state.filesDirectories.map(current => {
     if(current.permissions[0] =='d'){
-      return <Carpeta element={current} key={current.fileDirName} />;
+      return <Carpeta component={this} element={current} key={current.fileDirName} />;
     }
-    return <Archivo element={current} key={current.fileDirName} />;
+    return <Archivo component={this} element={current} key={current.fileDirName} />;
   })
 }
 
@@ -369,6 +388,7 @@ handleChange(e) {
       <div>
         <nav className="navbar sticky-top navbar-dark bg-dark">
           <form className="form-inline">
+            <button className="btn btn-outline-info mx-1" disabled={this.state.dirPath == "/"} onClick={()=>this.goBackDirpath(this.state.dirPath)}>Volver</button>
             <button className="btn btn-outline-success mx-1" type="button" data-toggle="modal" data-target="#addFileOrDirectory">Crear Archivo/Carpeta</button>
             <button className="btn btn-outline-warning mx-1" type="button" disabled={this.state.action == ''} onClick={this.paste}>Pegar</button>
           </form>
