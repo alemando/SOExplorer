@@ -88,7 +88,7 @@ const Carpeta = props =>(
                       <div className="btn-group " role="group" aria-label="action-buttons">
                         <button className="btn btn-success" type="button" data-dismiss="modal" onClick={()=>props.component.copy(props.element.fileDirName)}>Copiar</button>
                         <button className="btn btn-warning" type="button" data-dismiss="modal" onClick={()=>props.component.moveCut(props.element.fileDirName)}>Mover/Cortar</button>
-                        <button className="btn btn-danger" type="button" onClick={()=>props.component.delete(props.element.fileDirName)}>Eliminar</button>
+                        <button className="btn btn-danger" type="button" data-dismiss="modal" onClick={()=>props.component.delete(props.element.fileDirName)}>Eliminar</button>
                       </div>
                     </div>
                   </div>
@@ -98,7 +98,7 @@ const Carpeta = props =>(
                     <div className="col-md">
                     <div className="btn-group" role="group" aria-label="special-buttons"></div>
                       <div className="btn-group" role="group" aria-label="special-buttons">
-                        <button className="btn btn-success" type="button">Cambiar Nombre</button>
+                        <button className="btn btn-success" type="button" data-toggle="modal" onClick={()=>props.component.setState({oldName: props.element.fileDirName})} data-target="#changeName">Cambiar Nombre</button>
                         <button className="btn btn-primary" type="button">Cambiar Permisos</button>
                         <button className="btn btn-warning" type="button">Cambiar propietario</button>
                       </div>
@@ -194,7 +194,7 @@ const Archivo = props => (
                       <div className="btn-group " role="group" aria-label="action-buttons">
                         <button className="btn btn-success" type="button" data-dismiss="modal" onClick={()=>props.component.copy(props.element.fileDirName)}>Copiar</button>
                         <button className="btn btn-warning" type="button" data-dismiss="modal" onClick={()=>props.component.moveCut(props.element.fileDirName)}>Mover/Cortar</button>
-                        <button className="btn btn-danger" type="button" onClick={()=>props.component.delete(props.element.fileDirName)}>Eliminar</button>
+                        <button className="btn btn-danger" type="button" data-dismiss="modal" onClick={()=>props.component.delete(props.element.fileDirName)}>Eliminar</button>
                       </div>
                     </div>
                   </div>
@@ -204,7 +204,7 @@ const Archivo = props => (
                     <div className="col-md">
                     <div className="btn-group" role="group" aria-label="special-buttons"></div>
                       <div className="btn-group" role="group" aria-label="special-buttons">
-                        <button className="btn btn-success" type="button">Cambiar Nombre</button>
+                        <button className="btn btn-success" type="button" data-toggle="modal" onClick={()=>props.component.setState({oldName: props.element.fileDirName})} data-target="#changeName">Cambiar Nombre</button>
                         <button className="btn btn-primary" type="button">Cambiar Permisos</button>
                         <button className="btn btn-warning" type="button">Cambiar propietario</button>
                       </div>
@@ -236,10 +236,10 @@ export default class App extends Component {
       name: '',
       oldName: '',
       newName: ''
-
     }
     this.addFileOrDirectory = this.addFileOrDirectory.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.changeName = this.changeName.bind(this);
   }
 
   goBackDirpath(dirPath){
@@ -309,20 +309,46 @@ export default class App extends Component {
           'Accept' : 'application/json',
           'Content-Type': 'application/json'
       }
-  })
+    })
       .then(res => res.json())
       .then(data => {
-          this.fetchVerCarpeta()
+          this.fetchVerCarpeta(this.state.dirPath)
           this.setState({
-            dir: this.state.dirPath,
             type: 'Archivo',
             selectedOption: 'Archivo',
             name: '',
             
           })
+      })
+      .catch(err => console.error(err));
+  }
+
+  changeName(e){
+    e.preventDefault();
+    let data = {
+      dir: this.state.dirPath,
+      oldName: this.state.oldName,
+      newName: this.state.newName,
+    }
+    fetch('/api/changeName', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+          'Accept' : 'application/json',
+          'Content-Type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+          this.fetchVerCarpeta(this.state.dirPath)
+          this.setState({
+            oldName: '',
+            newName: ''
+          })
           console.log(data)
       })
       .catch(err => console.error(err));
+
   }
 
   paste(){
@@ -343,13 +369,12 @@ export default class App extends Component {
     })
     .then(res => res.json())
     .then(data => {
-        this.fetchVerCarpeta()
+        this.fetchVerCarpeta(this.state.dirPath)
         this.setState({
           currentDir: '',
           action: '',
           fileDirectoryName: ''
         })
-        console.log(data)
     })
     .catch(err => console.error(err));
   }
@@ -370,8 +395,25 @@ export default class App extends Component {
     })
   }
 
-  delete(){
-    console.log('borrar')
+  delete(fileDirectory){
+    let data = {
+      dir: this.state.dirPath,
+      fileDirectoryName : fileDirectory
+    }
+
+    fetch('/api/delete', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+          'Accept' : 'application/json',
+          'Content-Type': 'application/json'
+      }
+      })
+      .then(res => res.json())
+      .then(data => {
+          this.fetchVerCarpeta(this.state.dirPath)
+      })
+      .catch(err => console.error(err));
   }
 
   
@@ -466,14 +508,14 @@ handleChange(e) {
                       </form>
                       </div>
                       <div className="modal-footer">
-                          <button type="submit" form="formAddFileOrDirectory" className="btn btn-primary">Enviar</button>
+                          <button type="submit" form="formAddFileOrDirectory"  className="btn btn-primary">Enviar</button>
                           <button type="button" className="btn btn-secondary" onClick={this.modalClose} data-dismiss="modal">Close</button>
                       </div>
                   </div>
               </div>
           </div>
           <div className="modal fade" id="changeName" tabIndex="-1" role="dialog" aria-hidden="true">
-          <div className="modal-dialog modal" role="document">
+          <div className="modal-dialog" role="document">
               <div className="modal-content">
                   <div className="modal-header">
                       <h5 className="modal-title"><b>Cambiar nombre del archivo/carpeta</b></h5>
@@ -488,14 +530,22 @@ handleChange(e) {
                           <div className="col-md-6">
                             <div className="form-group">
                               <label>Nombre archivo/carpeta:</label>
-                              <label>
-                                {this.oldName}
-                              </label>
                             </div>
                           </div>
                           <div className="col-md-6">
                             <div className="form-group">
+                              <label>{this.state.oldName}</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="form-group">
                               <label>* Nombre:</label>
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="form-group">
                               <input name="newName" onChange={this.handleChange}
                                   required
                                   value={this.state.newName}
@@ -515,128 +565,12 @@ handleChange(e) {
                       </form>
                       </div>
                       <div className="modal-footer">
-                          <button type="submit" form="formAddFileOrDirectory" className="btn btn-primary">Enviar</button>
+                          <button type="submit" form="formChangeName" className="btn btn-primary">Enviar</button>
                           <button type="button" className="btn btn-secondary" onClick={this.modalClose} data-dismiss="modal">Close</button>
                       </div>
                   </div>
               </div>
-          </div>
-          <div className="modal fade" id="addFileOrDirectory" tabIndex="-1" role="dialog" aria-hidden="true">
-          <div className="modal-dialog modal-lg" role="document">
-              <div className="modal-content">
-                  <div className="modal-header">
-                      <h5 className="modal-title"><b>Crear Archivo/Carpeta</b></h5>
-                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                      </button>
-                  </div>
-                  <div className="modal-body">
-                    <form id="formAddFileOrDirectory" onSubmit={this.addFileOrDirectory}>
-                      <div className="container-fluid">
-                        <div className="row">
-                          <div className="col-md-6">
-                            <div className="form-group">
-                            <label>* Archivo/Carpeta:</label>
-                              <div className="radio">
-                                <label>
-                                  <input type="radio" name="type" value="Archivo" checked={this.state.selectedOption ==='Archivo'} onChange={this.handleChange} />
-                                    Archivo
-                                </label>
-                              </div>
-                              <div className="radio">
-                                <label>
-                                  <input type="radio" name="type" value="Carpeta" checked={this.state.selectedOption === 'Carpeta'} onChange={this.handleChange} />
-                                  Carpeta
-                                </label>
-                              </div>
-                          </div>
-                        </div>
-                          <div className="col-md-6">
-                            <div className="form-group">
-                              <label>* Nombre:</label>
-                              <input name="name" onChange={this.handleChange}
-                                  required
-                                  value={this.state.name}
-                                  className="form-control"
-                                  />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="row">
-                          <div className="col">
-                            <div className="form-group">
-                              <label>Todos los campos con * son obligatorios</label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      </form>
-                      </div>
-                      <div className="modal-footer">
-                          <button type="submit" form="formAddFileOrDirectory" className="btn btn-primary">Enviar</button>
-                          <button type="button" className="btn btn-secondary" onClick={this.modalClose} data-dismiss="modal">Close</button>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <div className="modal fade" id="addFileOrDirectory" tabIndex="-1" role="dialog" aria-hidden="true">
-          <div className="modal-dialog modal-lg" role="document">
-              <div className="modal-content">
-                  <div className="modal-header">
-                      <h5 className="modal-title"><b>Crear Archivo/Carpeta</b></h5>
-                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                      </button>
-                  </div>
-                  <div className="modal-body">
-                    <form id="formAddFileOrDirectory" onSubmit={this.addFileOrDirectory}>
-                      <div className="container-fluid">
-                        <div className="row">
-                          <div className="col-md-6">
-                            <div className="form-group">
-                            <label>* Archivo/Carpeta:</label>
-                              <div className="radio">
-                                <label>
-                                  <input type="radio" name="type" value="Archivo" checked={this.state.selectedOption ==='Archivo'} onChange={this.handleChange} />
-                                    Archivo
-                                </label>
-                              </div>
-                              <div className="radio">
-                                <label>
-                                  <input type="radio" name="type" value="Carpeta" checked={this.state.selectedOption === 'Carpeta'} onChange={this.handleChange} />
-                                  Carpeta
-                                </label>
-                              </div>
-                          </div>
-                        </div>
-                          <div className="col-md-6">
-                            <div className="form-group">
-                              <label>* Nombre:</label>
-                              <input name="name" onChange={this.handleChange}
-                                  required
-                                  value={this.state.name}
-                                  className="form-control"
-                                  />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="row">
-                          <div className="col">
-                            <div className="form-group">
-                              <label>Todos los campos con * son obligatorios</label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      </form>
-                      </div>
-                      <div className="modal-footer">
-                          <button type="submit" form="formAddFileOrDirectory" className="btn btn-primary">Enviar</button>
-                          <button type="button" className="btn btn-secondary" onClick={this.modalClose} data-dismiss="modal">Close</button>
-                      </div>
-                  </div>
-              </div>
-          </div>
+          </div> 
       </div>
     );
   }

@@ -63,6 +63,73 @@ app.post('/api/addFileOrDirectory', (req, res) => {
     res.json('Hello world')
 })
 
+app.post('/api/action', (req, res) => {
+    const currentDir = req.body.currentDir
+    const action = req.body.action
+    const detinationDir = req.body.detinationDir
+    const fileDirectoryName = req.body.fileDirectoryName
+    let directoryPath = path.join(__dirname+'/root/'+currentDir)
+    let command = ''
+    if(action == "copy"){
+        command = 'cp -R '+ fileDirectoryName + ' ' + detinationDir
+    }
+    else if(action == "moveCut"){
+        command = 'mv '+ fileDirectoryName + ' ' + detinationDir
+    }
+    exec(command, {cwd: directoryPath}, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+    });
+    
+    res.json('Hello world')
+})
+
+app.post('/api/delete', (req, res) => {
+    const dir = req.body.dir
+    const fileDirectoryName = req.body.fileDirectoryName
+    let directoryPath = path.join(__dirname+'/root/'+dir)
+    exec("rm -R " + fileDirectoryName, {cwd: directoryPath}, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+    });
+    
+    res.json('Hello world')
+})
+
+app.post('/api/changeName', (req, res) => {
+    const dir = req.body.dir
+    const oldName = req.body.oldName
+    const newName = req.body.newName
+    let directoryPath = path.join(__dirname+'/root/'+dir)
+    exec("mv " + oldName + " " + newName, {cwd: directoryPath}, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+    });
+    
+    res.json('Hello world')
+})
+
 //Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
