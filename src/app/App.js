@@ -233,18 +233,27 @@ export default class App extends Component {
       dirPath: '/',
       type: 'Archivo',
       selectedOption: 'Archivo',
-      name: ''
+      name: '',
+      oldName: '',
+      newName: ''
+
     }
     this.addFileOrDirectory = this.addFileOrDirectory.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
   goBackDirpath(dirPath){
-    console.log(dirPath.replace(new RegExp("([A-Za-z]*[/]?(?![A-Za-z]))+$"),""))
+    
+    let dirList = dirPath.split("/")
+    let replaceValue = dirList.pop()
+    if(replaceValue == ""){
+      replaceValue = dirList.pop()
+    }
+    let dir = dirPath.replace(replaceValue,"")
     this.setState({
-      dirPath: dirPath.replace(new RegExp("([A-Za-z]*[/]?(?![A-Za-z]))+$"),"")
+      dirPath: dir
     })
-    this.fetchVerCarpeta(dirPath.replace(new RegExp("([A-Za-z]*[/]?(?![A-Za-z]))+$"),""))
+    this.fetchVerCarpeta(dir)
   }
 
   changeDirpath(carpeta){
@@ -284,6 +293,7 @@ export default class App extends Component {
       }
     })
   }
+  
   addFileOrDirectory(e){
     e.preventDefault();
     let data = {
@@ -387,11 +397,11 @@ handleChange(e) {
     return (
       <div>
         <nav className="navbar sticky-top navbar-dark bg-dark">
-          <form className="form-inline">
+          <div className="form-inline">
             <button className="btn btn-outline-info mx-1" disabled={this.state.dirPath == "/"} onClick={()=>this.goBackDirpath(this.state.dirPath)}>Volver</button>
             <button className="btn btn-outline-success mx-1" type="button" data-toggle="modal" data-target="#addFileOrDirectory">Crear Archivo/Carpeta</button>
             <button className="btn btn-outline-warning mx-1" type="button" disabled={this.state.action == ''} onClick={this.paste}>Pegar</button>
-          </form>
+          </div>
         </nav>
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
@@ -405,6 +415,171 @@ handleChange(e) {
           </div>
         </div>
         <div className="modal fade" id="addFileOrDirectory" tabIndex="-1" role="dialog" aria-hidden="true">
+          <div className="modal-dialog modal-lg" role="document">
+              <div className="modal-content">
+                  <div className="modal-header">
+                      <h5 className="modal-title"><b>Crear Archivo/Carpeta</b></h5>
+                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div className="modal-body">
+                    <form id="formAddFileOrDirectory" onSubmit={this.addFileOrDirectory}>
+                      <div className="container-fluid">
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="form-group">
+                            <label>* Archivo/Carpeta:</label>
+                              <div className="radio">
+                                <label>
+                                  <input type="radio" name="type" value="Archivo" checked={this.state.selectedOption ==='Archivo'} onChange={this.handleChange} />
+                                    Archivo
+                                </label>
+                              </div>
+                              <div className="radio">
+                                <label>
+                                  <input type="radio" name="type" value="Carpeta" checked={this.state.selectedOption === 'Carpeta'} onChange={this.handleChange} />
+                                  Carpeta
+                                </label>
+                              </div>
+                          </div>
+                        </div>
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <label>* Nombre:</label>
+                              <input name="name" onChange={this.handleChange}
+                                  required
+                                  value={this.state.name}
+                                  className="form-control"
+                                  />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col">
+                            <div className="form-group">
+                              <label>Todos los campos con * son obligatorios</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      </form>
+                      </div>
+                      <div className="modal-footer">
+                          <button type="submit" form="formAddFileOrDirectory" className="btn btn-primary">Enviar</button>
+                          <button type="button" className="btn btn-secondary" onClick={this.modalClose} data-dismiss="modal">Close</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div className="modal fade" id="changeName" tabIndex="-1" role="dialog" aria-hidden="true">
+          <div className="modal-dialog modal" role="document">
+              <div className="modal-content">
+                  <div className="modal-header">
+                      <h5 className="modal-title"><b>Cambiar nombre del archivo/carpeta</b></h5>
+                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div className="modal-body">
+                    <form id="formChangeName" onSubmit={this.changeName}>
+                      <div className="container-fluid">
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <label>Nombre archivo/carpeta:</label>
+                              <label>
+                                {this.oldName}
+                              </label>
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <label>* Nombre:</label>
+                              <input name="newName" onChange={this.handleChange}
+                                  required
+                                  value={this.state.newName}
+                                  className="form-control"
+                                  />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col">
+                            <div className="form-group">
+                              <label>Todos los campos con * son obligatorios</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      </form>
+                      </div>
+                      <div className="modal-footer">
+                          <button type="submit" form="formAddFileOrDirectory" className="btn btn-primary">Enviar</button>
+                          <button type="button" className="btn btn-secondary" onClick={this.modalClose} data-dismiss="modal">Close</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div className="modal fade" id="addFileOrDirectory" tabIndex="-1" role="dialog" aria-hidden="true">
+          <div className="modal-dialog modal-lg" role="document">
+              <div className="modal-content">
+                  <div className="modal-header">
+                      <h5 className="modal-title"><b>Crear Archivo/Carpeta</b></h5>
+                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div className="modal-body">
+                    <form id="formAddFileOrDirectory" onSubmit={this.addFileOrDirectory}>
+                      <div className="container-fluid">
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="form-group">
+                            <label>* Archivo/Carpeta:</label>
+                              <div className="radio">
+                                <label>
+                                  <input type="radio" name="type" value="Archivo" checked={this.state.selectedOption ==='Archivo'} onChange={this.handleChange} />
+                                    Archivo
+                                </label>
+                              </div>
+                              <div className="radio">
+                                <label>
+                                  <input type="radio" name="type" value="Carpeta" checked={this.state.selectedOption === 'Carpeta'} onChange={this.handleChange} />
+                                  Carpeta
+                                </label>
+                              </div>
+                          </div>
+                        </div>
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <label>* Nombre:</label>
+                              <input name="name" onChange={this.handleChange}
+                                  required
+                                  value={this.state.name}
+                                  className="form-control"
+                                  />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col">
+                            <div className="form-group">
+                              <label>Todos los campos con * son obligatorios</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      </form>
+                      </div>
+                      <div className="modal-footer">
+                          <button type="submit" form="formAddFileOrDirectory" className="btn btn-primary">Enviar</button>
+                          <button type="button" className="btn btn-secondary" onClick={this.modalClose} data-dismiss="modal">Close</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div className="modal fade" id="addFileOrDirectory" tabIndex="-1" role="dialog" aria-hidden="true">
           <div className="modal-dialog modal-lg" role="document">
               <div className="modal-content">
                   <div className="modal-header">
