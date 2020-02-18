@@ -105,7 +105,7 @@ const Carpeta = props =>(
                       <div className="btn-group" role="group" aria-label="special-buttons">
                         <button className="btn btn-success" type="button" data-toggle="modal" onClick={()=>props.component.setState({oldName: props.element.fileDirName})} data-target="#changeName">Cambiar Nombre</button>
                         <button className="btn btn-primary" type="button">Cambiar Permisos</button>
-                        <button className="btn btn-warning" type="button">Cambiar propietario</button>
+                        <button className="btn btn-warning" type="button" data-toggle="modal" onClick={()=>props.component.setState({oldName: props.element.fileDirName})} data-target="#changePropietary">Cambiar propietario</button>
                       </div>
                     </div>
                   </div>
@@ -211,7 +211,7 @@ const Archivo = props => (
                       <div className="btn-group" role="group" aria-label="special-buttons">
                         <button className="btn btn-success" type="button" data-toggle="modal" onClick={()=>props.component.setState({oldName: props.element.fileDirName})} data-target="#changeName">Cambiar Nombre</button>
                         <button className="btn btn-primary" type="button">Cambiar Permisos</button>
-                        <button className="btn btn-warning" type="button">Cambiar propietario</button>
+                        <button className="btn btn-warning" type="button" data-toggle="modal" onClick={()=>props.component.setState({oldName: props.element.fileDirName})} data-target="#changePropietary">Cambiar propietario</button>
                       </div>
                     </div>
                   </div>
@@ -327,16 +327,28 @@ export default class App extends Component {
     })
       .then(res => res.json())
       .then(data => {
-
-          this.modalClose("addFileOrDirectory")
-
-          this.fetchVerCarpeta(this.state.dirPath)
-          this.setState({
-            type: 'Archivo',
-            selectedOption: 'Archivo',
-            name: '',
+          if(data.id == 0){
+                    
+            Swal.fire({
+              text: data.message,
+              icon: 'error'
+            })
+          }else if(data.id == 1){
             
-          })
+            Swal.fire({
+              text: data.message,
+              icon: 'success'
+            })
+            this.modalClose("addFileOrDirectory")
+
+            this.fetchVerCarpeta(this.state.dirPath)
+            this.setState({
+              type: 'Archivo',
+              selectedOption: 'Archivo',
+              name: '',
+              
+            })
+          }
       })
       .catch(err => console.error(err));
   }
@@ -566,7 +578,7 @@ handleChange(e) {
                         <div className="row">
                           <div className="col-md-6">
                             <div className="form-group">
-                              <label>* Nombre:</label>
+                              <label>* Nuevo nombre:</label>
                             </div>
                           </div>
                           <div className="col-md-6">
@@ -592,6 +604,63 @@ handleChange(e) {
                       <div className="modal-footer">
                           <button type="submit" form="formChangeName" className="btn btn-primary">Enviar</button>
                           <button type="button" className="btn btn-secondary" onClick={()=>this.modalClose("changeName")} data-dismiss="modal" >Close</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div className="modal fade" id="changePropietary" tabIndex="-1" role="dialog" aria-hidden="true">
+          <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                  <div className="modal-header">
+                      <h5 className="modal-title"><b>Cambiar propietario del archivo/carpeta</b></h5>
+                      <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={()=>this.modalClose("changePropietary")}>
+                      <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div className="modal-body">
+                    <form id="formChangePropietary" onSubmit={this.changePropietary}>
+                      <div className="container-fluid">
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <label>Nombre archivo/carpeta:</label>
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <label>{this.state.oldName}</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <label>* Nombre:</label>
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <input name="newName" onChange={this.handleChange}
+                                  required
+                                  value={this.state.newName}
+                                  className="form-control"
+                                  />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col">
+                            <div className="form-group">
+                              <label>Todos los campos con * son obligatorios</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      </form>
+                      </div>
+                      <div className="modal-footer">
+                          <button type="submit" form="formChangePropietary" className="btn btn-primary">Enviar</button>
+                          <button type="button" className="btn btn-secondary" onClick={()=>this.modalClose("changePropietary")} data-dismiss="modal" >Close</button>
                       </div>
                   </div>
               </div>

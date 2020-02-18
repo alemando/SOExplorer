@@ -40,6 +40,7 @@ app.get('/carpeta', (req, res) => {
 })
 
 app.post('/api/addFileOrDirectory', (req, res) => {
+
     const dir = req.body.dir
     const type = req.body.type
     const name = req.body.name
@@ -51,16 +52,16 @@ app.post('/api/addFileOrDirectory', (req, res) => {
     exec(command, {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            return{id:"0", message:"Error al crear archivo o directorio " + error.message};
-        }
-        if (stderr) {
+            res.json({id:"0", message:"Error al crear archivo o directorio " + error.message})
+        }else if (stderr) {
             console.log(`stderr: ${stderr}`);
-            return{id:"0", message:"Error al crear archivo o directorio "+ stderr};
+            res.json({id:"0", message:"Error al crear archivo o directorio "+ stderr})
+        }else{
+            res.json({id:"1", message:"Creación exitosa"})
         }
-        return {id:"1", message:"Creación exitosa"}
     });
     
-    res.json('Hello world')
+    
 })
 
 app.post('/api/action', (req, res) => {
@@ -80,13 +81,14 @@ app.post('/api/action', (req, res) => {
     exec(command, {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            return{id:"0", message:"Error al mover archivo o directorio " + error.message};
-        }
+            res.json({id:"0", message:"Error al mover archivo o directorio " + error.message})
+        }else
         if (stderr) {
             console.log(`stderr: ${stderr}`);
-            return{id:"0", message:"Error al mover archivo o directorio "+ stderr};
+            res.json({id:"0", message:"Error al mover archivo o directorio "+ stderr})
+        }else{
+            res.json({id:"1", message:"Pegado exitoso"})
         }
-        return {id:"1", message:"Pegado exitoso"}
     });
     
     res.json('Hello world')
@@ -99,13 +101,13 @@ app.post('/api/delete', (req, res) => {
     exec("rm -R " + fileDirectoryName, {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            return{id:"0", message:"Error al borrar archivo o directorio " + error.message};
+            res.json({id:"0", message:"Error al borrar archivo o directorio " + error.message})
         }
         if (stderr) {
             console.log(`stderr: ${stderr}`);
-            return{id:"0", message:"Error al borrar archivo o directorio "+ stderr};
+            res.json({id:"0", message:"Error al borrar archivo o directorio "+ stderr})
         }
-        return {id:"1", message:"Borrado exitoso"}
+        res.json({id:"1", message:"Borrado exitoso"})
     });
     
     res.json('Hello world')
@@ -120,13 +122,13 @@ app.post('/api/changeName', (req, res) => {
     exec("mv " + oldName + " " + newName, {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            return{id:"0", message:"Error al cambiar el nombre " + error.message};
+            res.json({id:"0", message:"Error al cambiar el nombre " + error.message})
         }
         if (stderr) {
             console.log(`stderr: ${stderr}`);
-            return{id:"0", message:"Error al cambiar el nombre "+ stderr};
+            res.json({id:"0", message:"Error al cambiar el nombre "+ stderr})
         }
-        return {id:"1", message:"Cambio de nombre exitoso"}
+        res.json( {id:"1", message:"Cambio de nombre exitoso"})
     });
     
     res.json('Hello world')
@@ -141,13 +143,13 @@ app.post('/api/changeUser', (req, res) => {
     exec("sudo chown " + user + " " + fileDirectoryName, {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            return{id:"0", message:"Error al cambiar el nombre " + error.message};
+            res.json({id:"0", message:"Error al cambiar el nombre " + error.message})
         }
         if (stderr) {
             console.log(`stderr: ${stderr}`);
-            return{id:"0", message:"Error al cambiar el nombre "+ stderr};
+            res.json({id:"0", message:"Error al cambiar el nombre "+ stderr})
         }
-        return {id:"1", message:"Cambio de nombre exitoso"}
+        res.json( {id:"1", message:"Cambio de nombre exitoso"})
     });
     
     res.json('Hello world')
@@ -162,14 +164,14 @@ app.post('/api/users', (req, res) => {
     exec("eval getent passwd {$(awk '/^UID_MIN/ {print $2}' /etc/login.defs)..$(awk '/^UID_MAX/ {print $2}' /etc/login.defs)} | cut -d: -f1"+"mv " + oldName + " " + newName, {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            return{id:"0", message:"Error al cambiar el nombre " + error.message};
+            res.json({id:"0", message:"Error al cambiar el nombre " + error.message})
         }
         if (stderr) {
             console.log(`stderr: ${stderr}`);
-            return{id:"0", message:"Error al cambiar el nombre "+ stderr};
+            res.json({id:"0", message:"Error al cambiar el nombre "+ stderr})
         }
 
-        return {id:"1", message:"Cambio de nombre exitoso"}
+        res.json( {id:"1", message:"Cambio de nombre exitoso"})
     });
     
     res.json('Hello world')
@@ -184,13 +186,13 @@ app.post('/api/modifyPermissions', (req, res) => {
     exec("mv " + oldName + " " + newName, {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            return{id:"0", message:"Error al cambiar el nombre " + error.message};
+            res.json({id:"0", message:"Error al cambiar el nombre " + error.message})
         }
         if (stderr) {
             console.log(`stderr: ${stderr}`);
-            return{id:"0", message:"Error al cambiar el nombre "+ stderr};
+            res.json({id:"0", message:"Error al cambiar el nombre "+ stderr})
         }
-        return {id:"1", message:"Cambio de nombre exitoso"}
+        res.json( {id:"1", message:"Cambio de nombre exitoso"})
     });
     
     res.json('Hello world')
