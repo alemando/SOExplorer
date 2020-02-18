@@ -327,6 +327,9 @@ export default class App extends Component {
     })
       .then(res => res.json())
       .then(data => {
+
+          this.modalClose("addFileOrDirectory")
+
           this.fetchVerCarpeta(this.state.dirPath)
           this.setState({
             type: 'Archivo',
@@ -355,6 +358,11 @@ export default class App extends Component {
     })
       .then(res => res.json())
       .then(data => {
+
+          this.modalClose("Carpeta-"+this.state.oldName.replace('.',"_"))
+          this.modalClose("Archivo-"+this.state.oldName.replace('.',"_"))
+          this.modalClose("changeName")
+
           this.fetchVerCarpeta(this.state.dirPath)
           this.setState({
             oldName: '',
@@ -367,7 +375,6 @@ export default class App extends Component {
   }
 
   paste(){
-    console.log(this.state)
     let data = {
       currentDir: this.state.currentDir,
       action: this.state.action,
