@@ -158,20 +158,18 @@ app.post('/api/changeUser', (req, res) => {
 app.post('/api/users', (req, res) => {
 
     const dir = req.body.dir
-    const oldName = req.body.oldName
-    const newName = req.body.newName
     let directoryPath = path.join(__dirname+'/root/'+dir)
-    exec("eval getent passwd {$(awk '/^UID_MIN/ {print $2}' /etc/login.defs)..$(awk '/^UID_MAX/ {print $2}' /etc/login.defs)} | cut -d: -f1"+"mv " + oldName + " " + newName, {cwd: directoryPath}, (error, stdout, stderr) => {
+    exec("eval getent passwd {$(awk '/^UID_MIN/ {print $2}' /etc/login.defs)..$(awk '/^UID_MAX/ {print $2}' /etc/login.defs)} | cut -d: -f1", {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            res.json({id:"0", message:"Error al cambiar el nombre " + error.message})
+            res.json({id:"0", message:"Error al traer los usuarios " + error.message})
         }
         if (stderr) {
             console.log(`stderr: ${stderr}`);
-            res.json({id:"0", message:"Error al cambiar el nombre "+ stderr})
+            res.json({id:"0", message:"Error al traer los usuarios "+ stderr})
         }
-
-        res.json( {id:"1", message:"Cambio de nombre exitoso"})
+        let usersList = stdout.split("\n")
+        res.json(usersList)
     });
     
     res.json('Hello world')
