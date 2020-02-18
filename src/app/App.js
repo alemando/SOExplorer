@@ -240,6 +240,7 @@ export default class App extends Component {
     this.addFileOrDirectory = this.addFileOrDirectory.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.changeName = this.changeName.bind(this);
+    this.paste = this.paste.bind(this);
   }
 
   goBackDirpath(dirPath){
@@ -352,12 +353,15 @@ export default class App extends Component {
   }
 
   paste(){
+    console.log(this.state)
     let data = {
       currentDir: this.state.currentDir,
       action: this.state.action,
-      detinationDir: this.state.dirPath,
+      destinationDir: this.state.dirPath,
       fileDirectoryName : this.state.fileDirectoryName
     }
+
+    console.log(data)
 
   fetch('/api/action', {
     method: 'POST',
