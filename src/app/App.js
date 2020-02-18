@@ -2,6 +2,9 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 
+//jquery
+import $ from 'jquery';
+
 //Fontawesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder, faFile } from '@fortawesome/free-solid-svg-icons'
@@ -241,6 +244,15 @@ export default class App extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.changeName = this.changeName.bind(this);
     this.paste = this.paste.bind(this);
+  }
+
+  modalClose(modal){
+    $('#'+modal).modal('hide');
+    $(document).on('hidden.bs.modal', '.modal', function () {
+      if ($('body').find('.modal.show').length > 0) {
+        $('body').addClass('modal-open');
+      }
+    });
   }
 
   goBackDirpath(dirPath){
@@ -523,7 +535,7 @@ handleChange(e) {
               <div className="modal-content">
                   <div className="modal-header">
                       <h5 className="modal-title"><b>Cambiar nombre del archivo/carpeta</b></h5>
-                      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                      <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={()=>this.modalClose("changeName")}>
                       <span aria-hidden="true">&times;</span>
                       </button>
                   </div>
@@ -570,7 +582,7 @@ handleChange(e) {
                       </div>
                       <div className="modal-footer">
                           <button type="submit" form="formChangeName" className="btn btn-primary">Enviar</button>
-                          <button type="button" className="btn btn-secondary" onClick={this.modalClose} data-dismiss="modal">Close</button>
+                          <button type="button" className="btn btn-secondary" onClick={()=>this.modalClose("changeName")} data-dismiss="modal" >Close</button>
                       </div>
                   </div>
               </div>
