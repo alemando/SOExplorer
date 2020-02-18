@@ -18,11 +18,11 @@ app.get('/carpeta', (req, res) => {
     exec('ls -l', {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            return;
+            return{id:"0", message:"Error al abrir carpeta " + error.message};
         }
         if (stderr) {
             console.log(`stderr: ${stderr}`);
-            return;
+            return{id:"0", message:"Error al abrir carpeta"+ stderr};
         }
         let filesDirectorys = stdout.split("\n")
         filesDirectorys = filesDirectorys.slice(1, filesDirectorys.length-1)
@@ -51,13 +51,13 @@ app.post('/api/addFileOrDirectory', (req, res) => {
     exec(command, {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            return;
+            return{id:"0", message:"Error al crear archivo o directorio " + error.message};
         }
         if (stderr) {
             console.log(`stderr: ${stderr}`);
-            return;
+            return{id:"0", message:"Error al crear archivo o directorio "+ stderr};
         }
-        console.log(`stdout: ${stdout}`);
+        return {id:"1", message:"Creación exitosa"}
     });
     
     res.json('Hello world')
@@ -69,23 +69,24 @@ app.post('/api/action', (req, res) => {
     const destinationDir = req.body.destinationDir
     const fileDirectoryName = req.body.fileDirectoryName
     let directoryPath = path.join(__dirname+'/root/'+currentDir)
+    let destinationPath = path.join(__dirname+'/root/'+destinationDir) 
     let command = ''
     if(action == "copy"){
-        command = 'cp -R '+ fileDirectoryName + ' ' + detinationDir
+        command = 'cp -R '+ fileDirectoryName + ' ' + destinationPath
     }
     else if(action == "moveCut"){
-        command = 'mv '+ fileDirectoryName + ' ' + detinationDir
+        command = 'mv '+ fileDirectoryName + ' ' + destinationPath
     }
     exec(command, {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            return;
+            return{id:"0", message:"Error al mover archivo o directorio " + error.message};
         }
         if (stderr) {
             console.log(`stderr: ${stderr}`);
-            return;
+            return{id:"0", message:"Error al mover archivo o directorio "+ stderr};
         }
-        console.log(`stdout: ${stdout}`);
+        return {id:"1", message:"Pegado exitoso"}
     });
     
     res.json('Hello world')
@@ -98,19 +99,20 @@ app.post('/api/delete', (req, res) => {
     exec("rm -R " + fileDirectoryName, {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            return;
+            return{id:"0", message:"Error al borrar archivo o directorio " + error.message};
         }
         if (stderr) {
             console.log(`stderr: ${stderr}`);
-            return;
+            return{id:"0", message:"Error al borrar archivo o directorio "+ stderr};
         }
-        console.log(`stdout: ${stdout}`);
+        return {id:"1", message:"Borrado exitoso"}
     });
     
     res.json('Hello world')
 })
 
 app.post('/api/changeName', (req, res) => {
+
     const dir = req.body.dir
     const oldName = req.body.oldName
     const newName = req.body.newName
@@ -118,17 +120,82 @@ app.post('/api/changeName', (req, res) => {
     exec("mv " + oldName + " " + newName, {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            return;
+            return{id:"0", message:"Error al cambiar el nombre " + error.message};
         }
         if (stderr) {
             console.log(`stderr: ${stderr}`);
-            return;
+            return{id:"0", message:"Error al cambiar el nombre "+ stderr};
         }
-        console.log(`stdout: ${stdout}`);
+        return {id:"1", message:"Cambio de nombre exitoso"}
     });
     
     res.json('Hello world')
 })
+
+app.post('/api/changeUser', (req, res) => {
+
+    const dir = req.body.dir
+    const fileDirectoryName = req.body.fileDirectoryName
+    const user = req.body.user
+    let directoryPath = path.join(__dirname+'/root/'+dir)
+    exec("sudo chown " + user + " " + fileDirectoryName, {cwd: directoryPath}, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return{id:"0", message:"Error al cambiar el nombre " + error.message};
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return{id:"0", message:"Error al cambiar el nombre "+ stderr};
+        }
+        return {id:"1", message:"Cambio de nombre exitoso"}
+    });
+    
+    res.json('Hello world')
+})
+
+app.post('/api/users', (req, res) => {
+
+    const dir = req.body.dir
+    const oldName = req.body.oldName
+    const newName = req.body.newName
+    let directoryPath = path.join(__dirname+'/root/'+dir)
+    exec("eval getent passwd {$(awk '/^UID_MIN/ {print $2}' /etc/login.defs)..$(awk '/^UID_MAX/ {print $2}' /etc/login.defs)} | cut -d: -f1"+"mv " + oldName + " " + newName, {cwd: directoryPath}, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return{id:"0", message:"Error al cambiar el nombre " + error.message};
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return{id:"0", message:"Error al cambiar el nombre "+ stderr};
+        }
+
+        return {id:"1", message:"Cambio de nombre exitoso"}
+    });
+    
+    res.json('Hello world')
+})
+
+app.post('/api/modifyPermissions', (req, res) => {
+
+    const dir = req.body.dir
+    const permissions = req.body.permissions
+    const fileDirectoryName = req.body.fileDirectoryName
+    let directoryPath = path.join(__dirname+'/root/'+dir)
+    exec("mv " + oldName + " " + newName, {cwd: directoryPath}, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return{id:"0", message:"Error al cambiar el nombre " + error.message};
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return{id:"0", message:"Error al cambiar el nombre "+ stderr};
+        }
+        return {id:"1", message:"Cambio de nombre exitoso"}
+    });
+    
+    res.json('Hello world')
+})
+
 
 //Static files
 app.use(express.static(path.join(__dirname, 'public')));
