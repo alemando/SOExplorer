@@ -11,6 +11,8 @@ import { faFolder, faFile } from '@fortawesome/free-solid-svg-icons'
 
 import React, { Component } from 'react';
 
+import Swal from 'sweetalert2'
+
 const Carpeta = props =>(
   <div className="card mx-1" style={{width : '13rem'}}>
     <div className="card-body mx-auto">
