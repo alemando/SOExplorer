@@ -143,13 +143,13 @@ app.post('/api/changeUser', (req, res) => {
     exec("sudo chown " + user + " " + fileDirectoryName, {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            res.json({id:"0", message:"Error al cambiar el nombre " + error.message})
+            res.json({id:"0", message:"Error al cambiar propietario " + error.message})
         }
         if (stderr) {
             console.log(`stderr: ${stderr}`);
-            res.json({id:"0", message:"Error al cambiar el nombre "+ stderr})
+            res.json({id:"0", message:"Error al cambiar el propietario "+ stderr})
         }
-        res.json( {id:"1", message:"Cambio de nombre exitoso"})
+        res.json( {id:"1", message:"Cambio de propietario exitoso"})
     });
     
     res.json('Hello world')
@@ -181,16 +181,16 @@ app.post('/api/modifyPermissions', (req, res) => {
     const permissions = req.body.permissions
     const fileDirectoryName = req.body.fileDirectoryName
     let directoryPath = path.join(__dirname+'/root/'+dir)
-    exec("mv " + oldName + " " + newName, {cwd: directoryPath}, (error, stdout, stderr) => {
+    exec("chmod -R " + permissions + " " + fileDirectoryName, {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            res.json({id:"0", message:"Error al cambiar el nombre " + error.message})
+            res.json({id:"0", message:"Error al modificar los permisos " + error.message})
         }
         if (stderr) {
             console.log(`stderr: ${stderr}`);
-            res.json({id:"0", message:"Error al cambiar el nombre "+ stderr})
+            res.json({id:"0", message:"Error al modificar los permisos "+ stderr})
         }
-        res.json( {id:"1", message:"Cambio de nombre exitoso"})
+        res.json( {id:"1", message:"Cambio de permisos exitoso"})
     });
     
     res.json('Hello world')
