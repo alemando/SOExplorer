@@ -140,6 +140,7 @@ app.post('/api/changeUser', (req, res) => {
     exec("sudo chown " + user + " " + fileDirectoryName , {cwd: directoryPath}, (error, stdout, stderr) => {
         //child.stdin.write("99101912201"+ "\n")
         exec("99101912201",{cwd: directoryPath}),(error1, stdout1,stderr1) =>{
+            console.log("Salida: "+stdout1)
         }
         if (error) {
             console.log(`error: ${error.message}`);
@@ -178,6 +179,7 @@ app.post('/api/modifyPermissions', (req, res) => {
     let directoryPath = path.join(__dirname+'/root/'+dir)
     exec("sudo chmod -R " + permissions + " " + fileDirectoryName, {cwd: directoryPath}, (error, stdout, stderr) => {
         exec("99101912201",{cwd: directoryPath}),(error1, stdout1,stderr1) =>{
+            console.log("Salida: "+stdout1)
         }
         if (error) {
             console.log(`error: ${error.message}`);
