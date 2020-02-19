@@ -136,12 +136,9 @@ app.post('/api/changeUser', (req, res) => {
     const dir = req.body.dir
     const fileDirectoryName = req.body.fileDirectoryName
     const user = req.body.user
+    const pass= "99101912201"
     let directoryPath = path.join(__dirname+'/root/'+dir)
-    exec("sudo chown " + user + " " + fileDirectoryName , {cwd: directoryPath}, (error, stdout, stderr) => {
-        //child.stdin.write("99101912201"+ "\n")
-        exec("99101912201",{cwd: directoryPath}),(error1, stdout1,stderr1) =>{
-            console.log("Salida: "+stdout1)
-        }
+    exec("echo " +pass+" | sudo -kS chown " + user + " " + fileDirectoryName , {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             res.json({id:"0", message:"Error al cambiar propietario " + error.message})
@@ -176,11 +173,12 @@ app.post('/api/modifyPermissions', (req, res) => {
     const dir = req.body.dir
     const permissions = req.body.permissions
     const fileDirectoryName = req.body.fileDirectoryName
+    const pass = "99101912201"
     let directoryPath = path.join(__dirname+'/root/'+dir)
-    exec("sudo chmod -R " + permissions + " " + fileDirectoryName, {cwd: directoryPath}, (error, stdout, stderr) => {
-        exec("99101912201",{cwd: directoryPath}),(error1, stdout1,stderr1) =>{
+    exec("echo "+pass+ " | sudo -kS chmod -R " + permissions + " " + fileDirectoryName, {cwd: directoryPath}, (error, stdout, stderr) => {
+        /*exec("99101912201",{cwd: directoryPath}),(error1, stdout1,stderr1) =>{
             console.log("Salida: "+stdout1)
-        }
+        }*/
         if (error) {
             console.log(`error: ${error.message}`);
             res.json({id:"0", message:"Error al modificar los permisos " + error.message})
