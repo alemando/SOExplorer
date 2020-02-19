@@ -43,7 +43,7 @@ app.post('/api/addFileOrDirectory', (req, res) => {
 
     const dir = req.body.dir
     const type = req.body.type
-    const name = req.body.name
+    const name = req.body.name.replace(" ","_")
     let directoryPath = path.join(__dirname+'/root/'+dir)
     let command = 'mkdir '+ name
     if(type =="Archivo"){
@@ -114,7 +114,7 @@ app.post('/api/changeName', (req, res) => {
 
     const dir = req.body.dir
     const oldName = req.body.oldName
-    const newName = req.body.newName
+    const newName = req.body.newName.replace(" ","_")
     let directoryPath = path.join(__dirname+'/root/'+dir)
     exec("mv " + oldName + " " + newName, {cwd: directoryPath}, (error, stdout, stderr) => {
         if (error) {
@@ -138,7 +138,9 @@ app.post('/api/changeUser', (req, res) => {
     const user = req.body.user
     let directoryPath = path.join(__dirname+'/root/'+dir)
     exec("sudo chown " + user + " " + fileDirectoryName , {cwd: directoryPath}, (error, stdout, stderr) => {
-        child.stdin.write("99101912201"+ "\n")
+        //child.stdin.write("99101912201"+ "\n")
+        exec("99101912201",{cwd: directoryPath}),(error1, stdout1,stderr1) =>{
+        }
         if (error) {
             console.log(`error: ${error.message}`);
             res.json({id:"0", message:"Error al cambiar propietario " + error.message})
@@ -174,7 +176,9 @@ app.post('/api/modifyPermissions', (req, res) => {
     const permissions = req.body.permissions
     const fileDirectoryName = req.body.fileDirectoryName
     let directoryPath = path.join(__dirname+'/root/'+dir)
-    exec("chmod -R " + permissions + " " + fileDirectoryName, {cwd: directoryPath}, (error, stdout, stderr) => {
+    exec("sudo chmod -R " + permissions + " " + fileDirectoryName, {cwd: directoryPath}, (error, stdout, stderr) => {
+        exec("99101912201",{cwd: directoryPath}),(error1, stdout1,stderr1) =>{
+        }
         if (error) {
             console.log(`error: ${error.message}`);
             res.json({id:"0", message:"Error al modificar los permisos " + error.message})
