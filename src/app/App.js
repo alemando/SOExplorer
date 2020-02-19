@@ -242,11 +242,17 @@ export default class App extends Component {
       oldName: '',
       newName: '',
       user: '',
+      p: 0,
+      g: 0,
+      o: 0,
       users: []
     }
     this.addFileOrDirectory = this.addFileOrDirectory.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleChangeCheck = this.handleChangeCheck.bind(this);
     this.changeName = this.changeName.bind(this);
+    this.changePropietary = this.changePropietary.bind(this);
+    this.changePermissions = this.changePermissions.bind(this);
     this.paste = this.paste.bind(this);
     this.users = this.users.bind(this);
   }
@@ -461,12 +467,13 @@ export default class App extends Component {
 
   changePermissions(e){
     e.preventDefault();
+    let perm = this.state.p.toString()+this.state.g.toString()+this.state.o.toString()
     let data = {
       dir: this.state.dirPath,
       fileDirectoryName: this.state.oldName,
-      user: this.state.user
+      permissions: perm
     }
-    fetch('/api/changeUser', {
+    fetch('/api/modifyPermissions', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
@@ -491,7 +498,7 @@ export default class App extends Component {
             })
             this.modalClose("Carpeta-"+this.state.oldName.replace('.',"_"))
             this.modalClose("Archivo-"+this.state.oldName.replace('.',"_"))
-            this.modalClose("changePropietary")
+            this.modalClose("changePermissions")
 
             this.fetchVerCarpeta(this.state.dirPath)
             this.setState({
@@ -627,15 +634,39 @@ handleChange(e) {
 }
 
 handleChangeCheck(e) {
-  console.log(e)
   const { name, value } = e.target;
-  console.log(name)
-  console.log(value)
-  /*const { name, value } = e.target;
-  this.setState({
-    selectedOption: e.target.value,
-    [name]: value
-  })*/
+  let valor = parseInt(value) 
+  if(e.target.checked){
+    if(name == "p"){
+      this.setState({
+        p: this.state.p+valor
+      })
+    }else if(name == "g"){
+      this.setState({
+        g: this.state.g+valor
+      })
+      
+    }else if(name == "o"){
+      this.setState({
+        o: this.state.o+valor
+      })
+    }
+  }else{
+    if(name == "p"){
+      this.setState({
+        p: this.state.p-valor
+      })
+    }else if(name == "g"){
+      this.setState({
+        g: this.state.g-valor
+      })
+      
+    }else if(name == "o"){
+      this.setState({
+        o: this.state.o-valor
+      })
+    }
+  }
 }
 
 users() {
@@ -885,21 +916,21 @@ users() {
                               <tbody>
                                 <tr>
                                   <th scope="row">Propietario</th>
-                                  <td><center><input className="form-check-input" type="checkbox" value="4" name="readP" id="readP" onChange={this.handleChangeCheck}/></center></td>
-                                  <td><center><input className="form-check-input" type="checkbox" value="2" name="writeP" id="writeP" onChange={this.handleChangeCheck}/></center></td>
-                                  <td><center><input className="form-check-input" type="checkbox" value="1" name="execP" id="execP" onChange={this.handleChangeCheck}/></center></td>
+                                  <td><center><input className="form-check-input" type="checkbox" value="4" name="p" id="readP" onChange={this.handleChangeCheck}/></center></td>
+                                  <td><center><input className="form-check-input" type="checkbox" value="2" name="p" id="writeP" onChange={this.handleChangeCheck}/></center></td>
+                                  <td><center><input className="form-check-input" type="checkbox" value="1" name="p" id="execP" onChange={this.handleChangeCheck}/></center></td>
                                 </tr>
                                 <tr>
                                   <th scope="row">Grupo</th>
-                                  <td><center><input className="form-check-input" type="checkbox" value="4" id="readG" onChange={this.handleChangeCheck}/></center></td>
-                                  <td><center><input className="form-check-input" type="checkbox" value="2" id="writeG" onChange={this.handleChangeCheck}/></center></td>
-                                  <td><center><input className="form-check-input" type="checkbox" value="1" id="execG" onChange={this.handleChangeCheck}/></center></td>
+                                  <td><center><input className="form-check-input" type="checkbox" value="4" name="g" id="readG" onChange={this.handleChangeCheck}/></center></td>
+                                  <td><center><input className="form-check-input" type="checkbox" value="2" name="g" id="writeG" onChange={this.handleChangeCheck}/></center></td>
+                                  <td><center><input className="form-check-input" type="checkbox" value="1" name="g" id="execG" onChange={this.handleChangeCheck}/></center></td>
                                 </tr>
                                 <tr>
                                   <th scope="row">Otros</th>
-                                  <td><center><input className="form-check-input" type="checkbox" value="4" id="readO" onChange={this.handleChangeCheck}/></center></td>
-                                  <td><center><input className="form-check-input" type="checkbox" value="2" id="writeO" onChange={this.handleChangeCheck}/></center></td>
-                                  <td><center><input className="form-check-input" type="checkbox" value="1" id="execO" onChange={this.handleChangeCheck}/></center></td>
+                                  <td><center><input className="form-check-input" type="checkbox" value="4" name="o" id="readO" onChange={this.handleChangeCheck}/></center></td>
+                                  <td><center><input className="form-check-input" type="checkbox" value="2" name="o" id="writeO" onChange={this.handleChangeCheck}/></center></td>
+                                  <td><center><input className="form-check-input" type="checkbox" value="1" name="o" id="execO" onChange={this.handleChangeCheck}/></center></td>
                                 </tr>
                               </tbody>
                             </table>
