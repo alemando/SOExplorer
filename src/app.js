@@ -150,10 +150,9 @@ app.post('/api/changeUser', (req, res) => {
         }
     });
 })
-
 app.get('/api/users', (req, res) => {
     let directoryPath = path.join(__dirname+'/root/')
-    exec("eval getent passwd {$(awk '/^UID_MIN/ {print $2}' /etc/login.defs)..$(awk '/^UID_MAX/ {print $2}' /etc/login.defs)} | cut -d: -f1", {cwd : directoryPath},(error, stdout, stderr) => {
+    exec("getent passwd", {cwd : directoryPath},(error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             res.json([])
@@ -162,7 +161,7 @@ app.get('/api/users', (req, res) => {
             console.log(`stderr: ${stderr}`);
             res.json([])
         } else {
-            let usersList = stdout.split("\n")
+            let usersList = stdout.split("\n").map(user => user.split(":")).filter(user => user[user.length - 1]!="/usr/sbin/nologin" && user[user.length -1]!="/bin/false").map(user => user[0]).filter(user => user!="")
             res.json(usersList)
         }
     });
