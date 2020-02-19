@@ -104,7 +104,7 @@ const Carpeta = props =>(
                     <div className="btn-group" role="group" aria-label="special-buttons"></div>
                       <div className="btn-group" role="group" aria-label="special-buttons">
                         <button className="btn btn-success" type="button" data-toggle="modal" onClick={()=>props.component.setState({oldName: props.element.fileDirName})} data-target="#changeName">Cambiar Nombre</button>
-                        <button className="btn btn-primary" type="button">Cambiar Permisos</button>
+                        <button className="btn btn-primary" type="button" data-toggle="modal" onClick={()=>props.component.setState({oldName: props.element.fileDirName})} data-target="#changePermissions">Cambiar Permisos</button>
                         <button className="btn btn-warning" type="button" data-toggle="modal" onClick={()=>props.component.setState({oldName: props.element.fileDirName})} data-target="#changePropietary">Cambiar propietario</button>
                       </div>
                     </div>
@@ -210,7 +210,7 @@ const Archivo = props => (
                     <div className="btn-group" role="group" aria-label="special-buttons"></div>
                       <div className="btn-group" role="group" aria-label="special-buttons">
                         <button className="btn btn-success" type="button" data-toggle="modal" onClick={()=>props.component.setState({oldName: props.element.fileDirName})} data-target="#changeName">Cambiar Nombre</button>
-                        <button className="btn btn-primary" type="button">Cambiar Permisos</button>
+                        <button className="btn btn-primary" type="button" data-toggle="modal" onClick={()=>props.component.setState({oldName: props.element.fileDirName})} data-target="#changePermissions">Cambiar Permisos</button>
                         <button className="btn btn-warning" type="button" data-toggle="modal" onClick={()=>props.component.setState({oldName: props.element.fileDirName})} data-target="#changePropietary">Cambiar propietario</button>
                       </div>
                     </div>
@@ -414,6 +414,52 @@ export default class App extends Component {
   }
 
   changePropietary(e){
+    e.preventDefault();
+    let data = {
+      dir: this.state.dirPath,
+      fileDirectoryName: this.state.oldName,
+      user: this.state.user
+    }
+    fetch('/api/changeUser', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+          'Accept' : 'application/json',
+          'Content-Type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+
+          if(data.id == 0){
+                      
+            Swal.fire({
+              text: data.message,
+              icon: 'error'
+            })
+          }else if(data.id == 1){
+            
+            Swal.fire({
+              text: data.message,
+              icon: 'success'
+            })
+            this.modalClose("Carpeta-"+this.state.oldName.replace('.',"_"))
+            this.modalClose("Archivo-"+this.state.oldName.replace('.',"_"))
+            this.modalClose("changePropietary")
+
+            this.fetchVerCarpeta(this.state.dirPath)
+            this.setState({
+              oldName: '',
+              user: ''
+            })
+          }
+
+      })
+      .catch(err => console.error(err));
+
+  }
+
+  changePermissions(e){
     e.preventDefault();
     let data = {
       dir: this.state.dirPath,
@@ -775,8 +821,67 @@ users() {
                       </form>
                       </div>
                       <div className="modal-footer">
-                          <button type="submit" form="formChangePropietary" className="btn btn-primary">Enviar</button>
-                          <button type="button" className="btn btn-secondary" onClick={()=>this.modalClose("changePropietary")} data-dismiss="modal" >Close</button>
+                          <button type="submit" form="formChangePermissions" className="btn btn-primary">Enviar</button>
+                          <button type="button" className="btn btn-secondary" onClick={()=>this.modalClose("changePermissions")} data-dismiss="modal" >Close</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div className="modal fade" id="changePermissions" tabIndex="-1" role="dialog" aria-hidden="true">
+          <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                  <div className="modal-header">
+                      <h5 className="modal-title"><b>Cambiar permisos del archivo/carpeta</b></h5>
+                      <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={()=>this.modalClose("changePropietary")}>
+                      <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div className="modal-body">
+                    <form id="formChangePropietary" onSubmit={this.changePermissions}>
+                      <div className="container-fluid">
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <label>Nombre archivo/carpeta:</label>
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <label>{this.state.oldName}</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <label>* Nuevo propietario:</label>
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <select name="user" onChange={this.handleChange}
+                                  required
+                                  value={this.state.user}
+                                  className="form-control">
+                                  <option  value=''>Seleccione...</option>
+                                  {this.users()}
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col">
+                            <div className="form-group">
+                              <label>Todos los campos con * son obligatorios</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      </form>
+                      </div>
+                      <div className="modal-footer">
+                          <button type="submit" form="formChangePermissions" className="btn btn-primary">Enviar</button>
+                          <button type="button" className="btn btn-secondary" onClick={()=>this.modalClose("changePermissions")} data-dismiss="modal" >Close</button>
                       </div>
                   </div>
               </div>

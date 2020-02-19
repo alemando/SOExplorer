@@ -152,8 +152,8 @@ app.post('/api/changeUser', (req, res) => {
 })
 
 app.get('/api/users', (req, res) => {
-
-    exec("eval getent passwd {$(awk '/^UID_MIN/ {print $2}' /etc/login.defs)..$(awk '/^UID_MAX/ {print $2}' /etc/login.defs)} | cut -d: -f1", (error, stdout, stderr) => {
+    let directoryPath = path.join(__dirname+'/root/')
+    exec("eval getent passwd {$(awk '/^UID_MIN/ {print $2}' /etc/login.defs)..$(awk '/^UID_MAX/ {print $2}' /etc/login.defs)} | cut -d: -f1", {cwd : directoryPath},(error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             res.json([])
