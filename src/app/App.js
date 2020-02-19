@@ -626,6 +626,18 @@ handleChange(e) {
   })
 }
 
+handleChangeCheck(e) {
+  console.log(e)
+  const { name, value } = e.target;
+  console.log(name)
+  console.log(value)
+  /*const { name, value } = e.target;
+  this.setState({
+    selectedOption: e.target.value,
+    [name]: value
+  })*/
+}
+
 users() {
   return this.state.users.map(currentUser => {
     return <option key={currentUser} value={currentUser}>{currentUser}</option>;
@@ -821,8 +833,8 @@ users() {
                       </form>
                       </div>
                       <div className="modal-footer">
-                          <button type="submit" form="formChangePermissions" className="btn btn-primary">Enviar</button>
-                          <button type="button" className="btn btn-secondary" onClick={()=>this.modalClose("changePermissions")} data-dismiss="modal" >Close</button>
+                          <button type="submit" form="formChangePropietary" className="btn btn-primary">Enviar</button>
+                          <button type="button" className="btn btn-secondary" onClick={()=>this.modalClose("changePropietary")} data-dismiss="modal" >Close</button>
                       </div>
                   </div>
               </div>
@@ -832,12 +844,12 @@ users() {
               <div className="modal-content">
                   <div className="modal-header">
                       <h5 className="modal-title"><b>Cambiar permisos del archivo/carpeta</b></h5>
-                      <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={()=>this.modalClose("changePropietary")}>
+                      <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={()=>this.modalClose("changePermissions")}>
                       <span aria-hidden="true">&times;</span>
                       </button>
                   </div>
                   <div className="modal-body">
-                    <form id="formChangePropietary" onSubmit={this.changePermissions}>
+                    <form id="formChangePermissions" onSubmit={this.changePermissions}>
                       <div className="container-fluid">
                         <div className="row">
                           <div className="col-md-6">
@@ -852,20 +864,45 @@ users() {
                           </div>
                         </div>
                         <div className="row">
-                          <div className="col-md-6">
+                          <div className="col-md">
                             <div className="form-group">
-                              <label>* Nuevo propietario:</label>
+                              <label>* Permisos:</label>
                             </div>
                           </div>
-                          <div className="col-md-6">
+                        </div>
+                        <div className="row">
+                          <div className="col-md">
                             <div className="form-group">
-                              <select name="user" onChange={this.handleChange}
-                                  required
-                                  value={this.state.user}
-                                  className="form-control">
-                                  <option  value=''>Seleccione...</option>
-                                  {this.users()}
-                              </select>
+                            <table className="table">
+                              <thead>
+                                <tr>
+                                  <th scope="col"></th>
+                                  <th scope="col">Leer</th>
+                                  <th scope="col">Escribir</th>
+                                  <th scope="col">Ejecutar</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">Propietario</th>
+                                  <td><center><input className="form-check-input" type="checkbox" value="4" name="readP" id="readP" onChange={this.handleChangeCheck}/></center></td>
+                                  <td><center><input className="form-check-input" type="checkbox" value="2" name="writeP" id="writeP" onChange={this.handleChangeCheck}/></center></td>
+                                  <td><center><input className="form-check-input" type="checkbox" value="1" name="execP" id="execP" onChange={this.handleChangeCheck}/></center></td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">Grupo</th>
+                                  <td><center><input className="form-check-input" type="checkbox" value="4" id="readG" onChange={this.handleChangeCheck}/></center></td>
+                                  <td><center><input className="form-check-input" type="checkbox" value="2" id="writeG" onChange={this.handleChangeCheck}/></center></td>
+                                  <td><center><input className="form-check-input" type="checkbox" value="1" id="execG" onChange={this.handleChangeCheck}/></center></td>
+                                </tr>
+                                <tr>
+                                  <th scope="row">Otros</th>
+                                  <td><center><input className="form-check-input" type="checkbox" value="4" id="readO" onChange={this.handleChangeCheck}/></center></td>
+                                  <td><center><input className="form-check-input" type="checkbox" value="2" id="writeO" onChange={this.handleChangeCheck}/></center></td>
+                                  <td><center><input className="form-check-input" type="checkbox" value="1" id="execO" onChange={this.handleChangeCheck}/></center></td>
+                                </tr>
+                              </tbody>
+                            </table>
                             </div>
                           </div>
                         </div>
