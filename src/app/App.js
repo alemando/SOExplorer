@@ -240,12 +240,15 @@ export default class App extends Component {
       selectedOption: 'Archivo',
       name: '',
       oldName: '',
-      newName: ''
+      newName: '',
+      user: '',
+      users: []
     }
     this.addFileOrDirectory = this.addFileOrDirectory.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.changeName = this.changeName.bind(this);
     this.paste = this.paste.bind(this);
+    this.users = this.users.bind(this);
   }
 
   modalClose(modal){
@@ -289,6 +292,17 @@ export default class App extends Component {
 
   componentDidMount(){
     this.fetchVerCarpeta("/");
+
+    //Cargar lista usuarios
+    fetch('/api/users', {
+      method: 'GET'
+    })
+    .then(res => res.json())
+    .then(data => {
+      this.setState({ users: data })
+    })
+    .catch(err => console.error(err));
+
   }
 
   fetchVerCarpeta(dirPath) {
@@ -370,17 +384,76 @@ export default class App extends Component {
     })
       .then(res => res.json())
       .then(data => {
+          if(data.id == 0){
+                    
+            Swal.fire({
+              text: data.message,
+              icon: 'error'
+            })
+          }else if(data.id == 1){
+            
+            Swal.fire({
+              text: data.message,
+              icon: 'success'
+            })
+            this.modalClose("Carpeta-"+this.state.oldName.replace('.',"_"))
+            this.modalClose("Archivo-"+this.state.oldName.replace('.',"_"))
+            this.modalClose("changeName")
 
-          this.modalClose("Carpeta-"+this.state.oldName.replace('.',"_"))
-          this.modalClose("Archivo-"+this.state.oldName.replace('.',"_"))
-          this.modalClose("changeName")
+            this.fetchVerCarpeta(this.state.dirPath)
+            this.setState({
+              oldName: '',
+              newName: ''
+            })
+          }
 
-          this.fetchVerCarpeta(this.state.dirPath)
-          this.setState({
-            oldName: '',
-            newName: ''
-          })
-          console.log(data)
+          
+      })
+      .catch(err => console.error(err));
+
+  }
+
+  changePropietary(e){
+    e.preventDefault();
+    let data = {
+      dir: this.state.dirPath,
+      fileDirectoryName: this.state.oldName,
+      user: this.state.user
+    }
+    fetch('/api/changeUser', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+          'Accept' : 'application/json',
+          'Content-Type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+
+          if(data.id == 0){
+                      
+            Swal.fire({
+              text: data.message,
+              icon: 'error'
+            })
+          }else if(data.id == 1){
+            
+            Swal.fire({
+              text: data.message,
+              icon: 'success'
+            })
+            this.modalClose("Carpeta-"+this.state.oldName.replace('.',"_"))
+            this.modalClose("Archivo-"+this.state.oldName.replace('.',"_"))
+            this.modalClose("changePropietary")
+
+            this.fetchVerCarpeta(this.state.dirPath)
+            this.setState({
+              oldName: '',
+              user: ''
+            })
+          }
+
       })
       .catch(err => console.error(err));
 
@@ -394,8 +467,6 @@ export default class App extends Component {
       fileDirectoryName : this.state.fileDirectoryName
     }
 
-    console.log(data)
-
   fetch('/api/action', {
     method: 'POST',
     body: JSON.stringify(data),
@@ -406,17 +477,36 @@ export default class App extends Component {
     })
     .then(res => res.json())
     .then(data => {
-        this.fetchVerCarpeta(this.state.dirPath)
-        this.setState({
-          currentDir: '',
-          action: '',
-          fileDirectoryName: ''
-        })
+        if(data.id == 0){
+                      
+          Swal.fire({
+            text: data.message,
+            icon: 'error'
+          })
+        }else if(data.id == 1){
+          
+          Swal.fire({
+            text: data.message,
+            icon: 'success'
+          })
+          this.fetchVerCarpeta(this.state.dirPath)
+          this.setState({
+            currentDir: '',
+            action: '',
+            fileDirectoryName: ''
+          })
+        }
+      
+        
     })
     .catch(err => console.error(err));
   }
 
   copy(fileDirectory){
+    Swal.fire({
+      text: 'Archivo/Carpeta copiada',
+      icon: 'success'
+    })
     this.setState({
       currentDir: this.state.dirPath,
       fileDirectoryName : fileDirectory,
@@ -425,6 +515,10 @@ export default class App extends Component {
   }
 
   moveCut(fileDirectory){
+    Swal.fire({
+      text: 'Archivo/Carpeta cortada',
+      icon: 'success'
+    })
     this.setState({
       currentDir: this.state.dirPath,
       fileDirectoryName : fileDirectory,
@@ -448,7 +542,21 @@ export default class App extends Component {
       })
       .then(res => res.json())
       .then(data => {
-          this.fetchVerCarpeta(this.state.dirPath)
+          if(data.id == 0){
+                        
+            Swal.fire({
+              text: data.message,
+              icon: 'error'
+            })
+          }else if(data.id == 1){
+            
+            Swal.fire({
+              text: data.message,
+              icon: 'success'
+            })
+
+            this.fetchVerCarpeta(this.state.dirPath)
+          }
       })
       .catch(err => console.error(err));
   }
@@ -469,6 +577,12 @@ handleChange(e) {
   this.setState({
     selectedOption: e.target.value,
     [name]: value
+  })
+}
+
+users() {
+  return this.state.users.map(currentUser => {
+    return <option key={currentUser} value={currentUser}>{currentUser}</option>;
   })
 }
 
@@ -635,16 +749,18 @@ handleChange(e) {
                         <div className="row">
                           <div className="col-md-6">
                             <div className="form-group">
-                              <label>* Nombre:</label>
+                              <label>* Nuevo propietario:</label>
                             </div>
                           </div>
                           <div className="col-md-6">
                             <div className="form-group">
-                              <input name="newName" onChange={this.handleChange}
+                              <select name="user" onChange={this.handleChange}
                                   required
-                                  value={this.state.newName}
-                                  className="form-control"
-                                  />
+                                  value={this.state.user}
+                                  className="form-control">
+                                  <option  value=''>Seleccione...</option>
+                                  {this.users()}
+                              </select>
                             </div>
                           </div>
                         </div>

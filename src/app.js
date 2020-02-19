@@ -90,8 +90,6 @@ app.post('/api/action', (req, res) => {
             res.json({id:"1", message:"Pegado exitoso"})
         }
     });
-    
-    res.json('Hello world')
 })
 
 app.post('/api/delete', (req, res) => {
@@ -102,15 +100,14 @@ app.post('/api/delete', (req, res) => {
         if (error) {
             console.log(`error: ${error.message}`);
             res.json({id:"0", message:"Error al borrar archivo o directorio " + error.message})
-        }
+        } else
         if (stderr) {
             console.log(`stderr: ${stderr}`);
             res.json({id:"0", message:"Error al borrar archivo o directorio "+ stderr})
+        } else{
+            res.json({id:"1", message:"Borrado exitoso"})
         }
-        res.json({id:"1", message:"Borrado exitoso"})
     });
-    
-    res.json('Hello world')
 })
 
 app.post('/api/changeName', (req, res) => {
@@ -123,15 +120,15 @@ app.post('/api/changeName', (req, res) => {
         if (error) {
             console.log(`error: ${error.message}`);
             res.json({id:"0", message:"Error al cambiar el nombre " + error.message})
-        }
+        } else
         if (stderr) {
             console.log(`stderr: ${stderr}`);
             res.json({id:"0", message:"Error al cambiar el nombre "+ stderr})
+        } else {
+            res.json( {id:"1", message:"Cambio de nombre exitoso"})
         }
-        res.json( {id:"1", message:"Cambio de nombre exitoso"})
     });
     
-    res.json('Hello world')
 })
 
 app.post('/api/changeUser', (req, res) => {
@@ -144,35 +141,31 @@ app.post('/api/changeUser', (req, res) => {
         if (error) {
             console.log(`error: ${error.message}`);
             res.json({id:"0", message:"Error al cambiar propietario " + error.message})
-        }
+        } else
         if (stderr) {
             console.log(`stderr: ${stderr}`);
             res.json({id:"0", message:"Error al cambiar el propietario "+ stderr})
+        } else{
+            res.json( {id:"1", message:"Cambio de propietario exitoso"})
         }
-        res.json( {id:"1", message:"Cambio de propietario exitoso"})
     });
-    
-    res.json('Hello world')
 })
 
-app.post('/api/users', (req, res) => {
+app.get('/api/users', (req, res) => {
 
-    const dir = req.body.dir
-    let directoryPath = path.join(__dirname+'/root/'+dir)
-    exec("eval getent passwd {$(awk '/^UID_MIN/ {print $2}' /etc/login.defs)..$(awk '/^UID_MAX/ {print $2}' /etc/login.defs)} | cut -d: -f1", {cwd: directoryPath}, (error, stdout, stderr) => {
+    exec("eval getent passwd {$(awk '/^UID_MIN/ {print $2}' /etc/login.defs)..$(awk '/^UID_MAX/ {print $2}' /etc/login.defs)} | cut -d: -f1", (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
-            res.json({id:"0", message:"Error al traer los usuarios " + error.message})
-        }
+            res.json([])
+        } else
         if (stderr) {
             console.log(`stderr: ${stderr}`);
-            res.json({id:"0", message:"Error al traer los usuarios "+ stderr})
+            res.json([])
+        } else {
+            let usersList = stdout.split("\n")
+            res.json(usersList)
         }
-        let usersList = stdout.split("\n")
-        res.json(usersList)
     });
-    
-    res.json('Hello world')
 })
 
 app.post('/api/modifyPermissions', (req, res) => {
@@ -185,15 +178,14 @@ app.post('/api/modifyPermissions', (req, res) => {
         if (error) {
             console.log(`error: ${error.message}`);
             res.json({id:"0", message:"Error al modificar los permisos " + error.message})
-        }
+        } else
         if (stderr) {
             console.log(`stderr: ${stderr}`);
             res.json({id:"0", message:"Error al modificar los permisos "+ stderr})
+        } else {
+            res.json( {id:"1", message:"Cambio de permisos exitoso"})
         }
-        res.json( {id:"1", message:"Cambio de permisos exitoso"})
     });
-    
-    res.json('Hello world')
 })
 
 
