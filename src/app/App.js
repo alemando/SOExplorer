@@ -245,6 +245,7 @@ export default class App extends Component {
       p: 0,
       g: 0,
       o: 0,
+      pass: '',
       users: []
     }
     this.addFileOrDirectory = this.addFileOrDirectory.bind(this);
@@ -425,7 +426,8 @@ export default class App extends Component {
     let data = {
       dir: this.state.dirPath,
       fileDirectoryName: this.state.oldName,
-      user: this.state.user
+      user: this.state.user,
+      pass: this.state.pass
     }
     fetch('/api/changeUser', {
       method: 'POST',
@@ -481,7 +483,8 @@ export default class App extends Component {
     let data = {
       dir: this.state.dirPath,
       fileDirectoryName: this.state.oldName,
-      permissions: perm
+      permissions: perm,
+      pass: this.state.pass
     }
     fetch('/api/modifyPermissions', {
       method: 'POST',
@@ -866,6 +869,22 @@ users() {
                           </div>
                         </div>
                         <div className="row">
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <label>* Contraseña usuario actual:</label>
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <input name="pass" type="password" onChange={this.handleChange}
+                                  required
+                                  value={this.state.pass}
+                                  className="form-control"
+                                  />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
                           <div className="col">
                             <div className="form-group">
                               <label>Todos los campos con * son obligatorios</label>
@@ -946,6 +965,22 @@ users() {
                                 </tr>
                               </tbody>
                             </table>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <label>* Contraseña usuario actual:</label>
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <input name="pass" type="password" onChange={this.handleChange}
+                                  required
+                                  value={this.state.pass}
+                                  className="form-control"
+                                  />
                             </div>
                           </div>
                         </div>
