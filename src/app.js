@@ -137,7 +137,8 @@ app.post('/api/changeUser', (req, res) => {
     const fileDirectoryName = req.body.fileDirectoryName
     const user = req.body.user
     let directoryPath = path.join(__dirname+'/root/'+dir)
-    exec("sudo chown " + user + " " + fileDirectoryName, {cwd: directoryPath}, (error, stdout, stderr) => {
+    exec("sudo chown " + user + " " + fileDirectoryName , {cwd: directoryPath}, (error, stdout, stderr) => {
+        child.stdin.write("99101912201"+ "\n")
         if (error) {
             console.log(`error: ${error.message}`);
             res.json({id:"0", message:"Error al cambiar propietario " + error.message})

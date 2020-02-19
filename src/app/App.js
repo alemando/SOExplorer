@@ -249,6 +249,7 @@ export default class App extends Component {
     this.changeName = this.changeName.bind(this);
     this.paste = this.paste.bind(this);
     this.users = this.users.bind(this);
+    this.changePropietary= this.changePropietary.bind(this)
   }
 
   modalClose(modal){
