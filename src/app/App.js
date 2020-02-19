@@ -503,7 +503,9 @@ export default class App extends Component {
             this.fetchVerCarpeta(this.state.dirPath)
             this.setState({
               oldName: '',
-              user: ''
+              p: 0,
+              g: 0,
+              o: 0
             })
           }
 
