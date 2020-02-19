@@ -469,6 +469,15 @@ export default class App extends Component {
   changePermissions(e){
     e.preventDefault();
     let perm = this.state.p.toString()+this.state.g.toString()+this.state.o.toString()
+    $( "#readP" ).prop( "checked", false );
+    $( "#writeP" ).prop( "checked", false );
+    $( "#execP" ).prop( "checked", false );
+    $( "#readG" ).prop( "checked", false );
+    $( "#writeG" ).prop( "checked", false );
+    $( "#execG" ).prop( "checked", false );
+    $( "#readO" ).prop( "checked", false );
+    $( "#writeO" ).prop( "checked", false );
+    $( "#execO" ).prop( "checked", false );
     let data = {
       dir: this.state.dirPath,
       fileDirectoryName: this.state.oldName,
