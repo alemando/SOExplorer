@@ -4,6 +4,9 @@ Para ejecutarlo debe realizar el siguiente paso a paso:
 1. Abrir la carpeta SOExplorer por medio de la terminal de comandos
 
 2. Estando en SOExplorer, ejecutamos el siguiente comando:
+npm install, y esperamos que se descarguen todas las dependencias.
+
+3. Posteriormente ejecutamos el siguiente comando, para iniciar la aplicación:
 npm start
 
 3. La consola nos mostrará un mensaje diciendo en qué puerto está el server
