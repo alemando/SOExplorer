@@ -572,7 +572,7 @@ export default class App extends Component {
 
   copy(fileDirectory){
     Swal.fire({
-      text: 'Archivo/Carpeta copiada',
+      text: 'Movido al portapapeles',
       icon: 'success'
     })
     this.setState({
@@ -584,7 +584,7 @@ export default class App extends Component {
 
   moveCut(fileDirectory){
     Swal.fire({
-      text: 'Archivo/Carpeta cortada',
+      text: 'Movido al portapapeles',
       icon: 'success'
     })
     this.setState({
